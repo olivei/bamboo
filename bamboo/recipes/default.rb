@@ -32,7 +32,7 @@ bash "install_bamboo" do
   end
 end
 
-template '#{node['bamboo']['installpath']}/atlassian-bamboo-5.8.1/atlassian-bamboo/WEB-INF/classes/bamboo-init.properties' do
+template "#{node['bamboo']['installpath']}/atlassian-bamboo-5.8.1/atlassian-bamboo/WEB-INF/classes/bamboo-init.properties" do
   mode 00644
   source 'bamboo.erb'
 end
