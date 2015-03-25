@@ -1,17 +1,17 @@
 
 user "bamboo" do
-  home "#{[:bamboo][:installpath]}"
+  home "#{node['bamboo']['installpath']}"
   shell "/bin/bash"
 end
 
-directory "#{[:bamboo][:installpath]}" do
+directory "#{node['bamboo']['installpath']}" do
   mode 0755
   owner 'bamboo'
   action :create
 end
 
 
-remote_file "#{[:bamboo][:installpath]}/atlassian-bamboo-5.8.1.tar.gz" do
+remote_file "#{node['bamboo']['installpath']}/atlassian-bamboo-5.8.1.tar.gz" do
   source "https://www.atlassian.com/software/bamboo/downloads/binary/atlassian-bamboo-5.8.1.tar.gz"
   owner 'root'
   mode '0755'
@@ -22,17 +22,17 @@ end
 
 bash "install_bamboo" do
   user "bamboo"
-  cwd "#{[:bamboo][:installpath]}"
+  cwd "#{node['bamboo']['installpath']}"
   code <<-EOH
     tar -xvzf atlassian-bamboo-5.8.1.tar.gz
     ln -s atlassian-bamboo-5.8.1/ current
   EOH
   not_if do
-    File.exists?("#{[:bamboo][:installpath]}/atlassian-bamboo-5.8.1.tar.gz")
+    File.exists?("#{node['bamboo']['installpath']}/atlassian-bamboo-5.8.1.tar.gz")
   end
 end
 
-template '#{[:bamboo][:installpath]}/atlassian-bamboo-5.8.1/atlassian-bamboo/WEB-INF/classes/bamboo-init.properties' do
+template '#{node['bamboo']['installpath']}/atlassian-bamboo-5.8.1/atlassian-bamboo/WEB-INF/classes/bamboo-init.properties' do
   mode 00644
   source 'bamboo.erb'
 end
