@@ -46,7 +46,7 @@ template "/etc/init.d/bamboo" do
 end
 
 
-bash "install_bamboo" do
+bash "install_bamboo2" do
   user "root"
   code <<-EOH
     /sbin/chkconfig --add bamboo
