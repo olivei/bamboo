@@ -1,13 +1,16 @@
 
-user node[:bamboo][:user] do
-  home node[:bamboo][:installpath]
-  shell "/bin/bash"
-end
 
 directory node[:bamboo][:installpath] do
   mode 0755
   owner node[:bamboo][:user]
   action :create
+end
+
+
+
+user node[:bamboo][:user] do
+  home node[:bamboo][:installpath]
+  shell "/bin/bash"
 end
 
 
