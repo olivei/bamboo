@@ -1,12 +1,12 @@
 
-user "bamboo" do
-  home "#{node['bamboo']['installpath']}"
+user node[:bamboo][:user] do
+  home node[:bamboo][:installpath]
   shell "/bin/bash"
 end
 
-directory "#{node['bamboo']['installpath']}" do
+directory node[:bamboo][:installpath] do
   mode 0755
-  owner 'bamboo'
+  owner node[:bamboo][:user]
   action :create
 end
 
@@ -21,8 +21,8 @@ end
 
 
 bash "install_bamboo" do
-  user "bamboo"
-  cwd "#{node['bamboo']['installpath']}"
+  user node[:bamboo][:user]
+  cwd node[:bamboo][:installpath]
   code <<-EOH
     tar -xvzf atlassian-bamboo-5.8.1.tar.gz
     ln -s atlassian-bamboo-5.8.1/ current
@@ -37,7 +37,7 @@ template "#{node['bamboo']['installpath']}/atlassian-bamboo-5.8.1/atlassian-bamb
   source 'bamboo.erb'
 end
 
-# set unicorn config
+
 template "/etc/init.d/bamboo" do
   source "bamboo.sh.erb"
   mode 0755

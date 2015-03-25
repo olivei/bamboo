@@ -11,7 +11,7 @@ USER=bamboo
 # Location of application's bin directory
 BASE=/opt/atlassian/bamboo/current
 # Location of Java JDK
-export JAVA_HOME=/usr/lib/jvm/jre
+export JAVA_HOME="<%= node[:bamboo][:javahome] %>
  
 case "$1" in
   # Start command
