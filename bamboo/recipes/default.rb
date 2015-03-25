@@ -1,0 +1,58 @@
+
+user "bamboo" do
+  home "#{[:bamboo][:installpath]}"
+  shell "/bin/bash"
+end
+
+directory "#{[:bamboo][:installpath]}" do
+  mode 0755
+  owner 'bamboo'
+  action :create
+end
+
+
+remote_file "#{[:bamboo][:installpath]}/atlassian-bamboo-5.8.1.tar.gz" do
+  source "https://www.atlassian.com/software/bamboo/downloads/binary/atlassian-bamboo-5.8.1.tar.gz"
+  owner 'root'
+  mode '0755'
+  action :create_if_missing 
+end
+
+
+
+bash "install_bamboo" do
+  user "bamboo"
+  cwd "#{[:bamboo][:installpath]}"
+  code <<-EOH
+    tar -xvzf atlassian-bamboo-5.8.1.tar.gz
+    ln -s atlassian-bamboo-5.8.1/ current
+  EOH
+  not_if do
+    File.exists?("#{[:bamboo][:installpath]}/atlassian-bamboo-5.8.1.tar.gz")
+  end
+end
+
+template '#{[:bamboo][:installpath]}/atlassian-bamboo-5.8.1/atlassian-bamboo/WEB-INF/classes/bamboo-init.properties' do
+  mode 00644
+  source 'bamboo.erb'
+end
+
+# set unicorn config
+template "/etc/init.d/bamboo" do
+  source "bamboo.sh.erb"
+  mode 0755
+  owner 'root'
+  group 'root'
+end
+
+
+bash "install_bamboo" do
+  user "root"
+  code <<-EOH
+    /sbin/chkconfig --add bamboo
+  EOH
+  not_if do
+    File.exists?("/etc/init.d/bamboo")
+  end
+end
+
