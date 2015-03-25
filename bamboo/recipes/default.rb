@@ -1,4 +1,9 @@
 
+directory "/opt/atlassian" do
+  mode 0755
+  owner node[:bamboo][:user]
+  action :create
+end
 
 directory node[:bamboo][:installpath] do
   mode 0755
