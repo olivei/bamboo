@@ -25,40 +25,40 @@ remote_file "#{node['bamboo']['installpath']}/atlassian-bamboo-5.8.1.tar.gz" do
   mode '0755'
   action :create_if_missing 
 end
+if node[:bamboo][:update]=="no" do
+    bash "install_bamboo" do
+      user node[:bamboo][:user]
+      cwd node[:bamboo][:installpath]
+      code <<-EOH
+        tar -xvzf atlassian-bamboo-5.8.1.tar.gz
+        ln -s atlassian-bamboo-5.8.1/ current
+      EOH
+      only_if do
+       File.exists?("#{node[:bamboo][:installpath]}/atlassian-bamboo-5.8.1.tar.gz")
+     end
+    end
 
-bash "install_bamboo" do
-  user node[:bamboo][:user]
-  cwd node[:bamboo][:installpath]
-  code <<-EOH
-    tar -xvzf atlassian-bamboo-5.8.1.tar.gz
-    ln -s atlassian-bamboo-5.8.1/ current
-  EOH
-  only_if do
-   File.exists?("#{node[:bamboo][:installpath]}/atlassian-bamboo-5.8.1.tar.gz")
- end
+    template "#{node[:bamboo][:installpath]}/atlassian-bamboo-5.8.1/atlassian-bamboo/WEB-INF/classes/bamboo-init.properties" do
+      mode 00644
+      source 'bamboo.erb'
+    end
+
+
+    template "/etc/init.d/bamboo" do
+      source "bamboo.sh.erb"
+      mode 0755
+      owner 'root'
+      group 'root'
+    end
+
+
+    bash "install_bamboo2" do
+      user "root"
+      code <<-EOH
+        /sbin/chkconfig --add bamboo
+      EOH
+      only_if do
+        File.exists?("/etc/init.d/bamboo")
+      end
+    end
 end
-
-template "#{node[:bamboo][:installpath]}/atlassian-bamboo-5.8.1/atlassian-bamboo/WEB-INF/classes/bamboo-init.properties" do
-  mode 00644
-  source 'bamboo.erb'
-end
-
-
-template "/etc/init.d/bamboo" do
-  source "bamboo.sh.erb"
-  mode 0755
-  owner 'root'
-  group 'root'
-end
-
-
-bash "install_bamboo2" do
-  user "root"
-  code <<-EOH
-    /sbin/chkconfig --add bamboo
-  EOH
-  only_if do
-    File.exists?("/etc/init.d/bamboo")
-  end
-end
-
