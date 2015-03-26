@@ -33,7 +33,7 @@ bash "install_bamboo" do
     tar -xvzf atlassian-bamboo-5.8.1.tar.gz
     ln -s atlassian-bamboo-5.8.1/ current
   EOH
-  onlyif do
+  only_if do
    File.exists?("#{node['bamboo']['installpath']}/atlassian-bamboo-5.8.1.tar.gz")
  end
 end
@@ -57,7 +57,7 @@ bash "install_bamboo2" do
   code <<-EOH
     /sbin/chkconfig --add bamboo
   EOH
-  not_if do
+  only_if do
     File.exists?("/etc/init.d/bamboo")
   end
 end
