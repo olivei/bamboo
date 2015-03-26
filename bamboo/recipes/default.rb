@@ -25,7 +25,7 @@ remote_file "#{node['bamboo']['installpath']}/atlassian-bamboo-5.8.1.tar.gz" do
   mode '0755'
   action :create_if_missing 
 end
-if node[:bamboo][:update]=="no" 
+
     bash "install_bamboo" do
       user node[:bamboo][:user]
       cwd node[:bamboo][:installpath]
@@ -62,4 +62,4 @@ if node[:bamboo][:update]=="no"
       end
     end
 
-end
+
