@@ -27,7 +27,7 @@ remote_file "#{node['bamboo']['installpath']}/atlassian-bamboo-5.8.1.tar.gz" do
 end
 
 
-
+if node[:bamboo][:update]==true
 bash "install_bamboo" do
   user node[:bamboo][:user]
   cwd node[:bamboo][:installpath]
@@ -38,6 +38,9 @@ bash "install_bamboo" do
   if do
     File.exists?("#{node['bamboo']['installpath']}/atlassian-bamboo-5.8.1.tar.gz")
   end
+end
+else
+   log "already installed"
 end
 
 template "#{node[:bamboo][:installpath:]}/atlassian-bamboo-5.8.1/atlassian-bamboo/WEB-INF/classes/bamboo-init.properties" do
