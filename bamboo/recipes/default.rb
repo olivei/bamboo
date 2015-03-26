@@ -26,8 +26,6 @@ remote_file "#{node['bamboo']['installpath']}/atlassian-bamboo-5.8.1.tar.gz" do
   action :create_if_missing 
 end
 
-
-if node[:bamboo][:update]==true
 bash "install_bamboo" do
   user node[:bamboo][:user]
   cwd node[:bamboo][:installpath]
@@ -35,12 +33,7 @@ bash "install_bamboo" do
     tar -xvzf atlassian-bamboo-5.8.1.tar.gz
     ln -s atlassian-bamboo-5.8.1/ current
   EOH
-  if do
-    File.exists?("#{node['bamboo']['installpath']}/atlassian-bamboo-5.8.1.tar.gz")
-  end
-end
-else
-   log "already installed"
+  onlyif File.exists?("#{node['bamboo']['installpath']}/atlassian-bamboo-5.8.1.tar.gz")
 end
 
 template "#{node[:bamboo][:installpath:]}/atlassian-bamboo-5.8.1/atlassian-bamboo/WEB-INF/classes/bamboo-init.properties" do
